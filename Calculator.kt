@@ -71,6 +71,38 @@ class Calculator {
         return result.toString().trim()
     }
 
+    /**
+     * @return retorna el valor de la expresion postfix en double
+     * @param expression la variable guarda la expresion en postfix evaluada por la funcion infixToPostfix
+     * La funcion se encarga de evaluar la expresion postfix y retornar un resultado numerico
+     */
+    fun evaluatePostfix(expression: String): Double {
+        val stack = mutableListOf<Double>()
+        val tokens = expression.split(" ")
+
+        for (token in tokens) {
+            when {
+                token.toDoubleOrNull() != null -> stack.add(token.toDouble())
+                token in listOf("+", "-", "*", "/", "^", "√") -> {
+                    val b = stack.removeAt(stack.size - 1)
+                    val a = stack.removeAt(stack.size - 1)
+                    val result = when (token) {
+                        "+" -> a + b
+                        "-" -> a - b
+                        "*" -> a * b
+                        "/" -> a / b
+                        "^" -> Math.pow(a, b)
+                        "√" -> Math.sqrt(a)
+                        else -> 0.0
+                    }
+                    stack.add(result)
+                }
+            }
+        }
+
+        return stack.last()
+    }
+
 
 
 }
