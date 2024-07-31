@@ -24,6 +24,53 @@ class Calculator {
         }
     }
 
+    /**
+     * @return cadena con expresion postfix
+     * @param expression variable que guarda la expresion entrada en consola infix
+     * La funcion convierte una expresion infix a postfix
+     */
+    fun infixToPostfix(expression: String): String {
+        val stack = mutableListOf<Char>()
+        val result = StringBuilder()
+        var i = 0
+
+        while (i < expression.length) {
+            val char = expression[i]
+
+            when {
+                char.isDigit() -> {
+                    // Leer números completos
+                    while (i < expression.length && (expression[i].isDigit() || expression[i] == '.')) {
+                        result.append(expression[i])
+                        i++
+                    }
+                    result.append(' ')  // Añadir un espacio para separar los números
+                    continue
+                }
+                char == '(' -> stack.add(char)
+                char == ')' -> {
+                    while (stack.isNotEmpty() && stack.last() != '(') {
+                        result.append(stack.removeAt(stack.size - 1)).append(' ')
+                    }
+                    stack.removeAt(stack.size - 1) // Remove '('
+                }
+                char in listOf('+', '-', '*', '/', '^') -> {
+                    while (stack.isNotEmpty() && priority(char) <= priority(stack.last())) {
+                        result.append(stack.removeAt(stack.size - 1)).append(' ')
+                    }
+                    stack.add(char)
+                }
+            }
+            i++
+        }
+
+        while (stack.isNotEmpty()) {
+            result.append(stack.removeAt(stack.size - 1)).append(' ')
+        }
+
+        return result.toString().trim()
+    }
+
 
 
 }
